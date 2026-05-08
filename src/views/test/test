@@ -1,0 +1,147 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+/**
+ * 1. KHAI BÁO ẢNH TỪ THƯ MỤC SRC/IMAGES
+ * Sau này mày ném ảnh vào folder src/images, rồi lên đây import tên file vào.
+ * Nếu chưa có ảnh thật, cứ để dấu // ở đầu dòng để code không bị lỗi.
+ */
+// import imgMsb1 from '@/images/msb-1.jpg'
+// import imgMsb2 from '@/images/msb-2.jpg'
+// import imgVpbank1 from '@/images/vp-1.jpg'
+// import imgTpbank1 from '@/images/tp-1.jpg'
+
+import vpsNhapMa from '@/images/vps-nhap-ma.jpg' // Giả sử cái này mày đã có
+import vpsNhapMa2 from '@/images/vps-nhap-ma-2.jpg'
+
+const route = useRoute()
+const router = useRouter()
+const showGuide = ref(false)
+
+/**
+ * 2. TỔNG KHO DỮ LIỆU
+ * Ở phần 'img', nếu mày chưa có ảnh thì để là 'null'. 
+ * Khi nào tải ảnh lên và import ở trên rồi thì điền tên biến vào đây.
+ */
+const jobsData: Record<string, any> = {
+  'app-chung-khoan': {
+    title: "MỞ APP CHỨNG KHOÁN",
+    reward: "200.000đ",
+    steps: [
+      { id: 1, title: "TẢI APP & ĐĂNG KÝ", content: "Cài đặt và đăng ký tài khoản.", img: vpsNhapMa },
+      { id: 2, title: "XÁC THỰC KYC", content: "Chụp ảnh CMND/CCCD và quét khuôn mặt.", img: vpsNhapMa2 }
+      { id: 2, title: "XÁC THỰC KYC", content: "Chụp ảnh CMND/CCCD và quét khuôn mặt.", img: vpsNhapMa2 }
+      { id: 2, title: "XÁC THỰC KYC", content: "Chụp ảnh CMND/CCCD và quét khuôn mặt.", img: vpsNhapMa2 }
+    ]
+  },
+  'bank-msb': {
+    title: "MỞ APP NGÂN HÀNG MSB",
+    reward: "100.000đ",
+    steps: [
+      { id: 1, title: "TẢI APP MSB", content: "Tìm kiếm 'MSB mBank' trên Store và tải về.", img: null }, // Đang để null vì chưa có ảnh
+      { id: 2, title: "NHẬP THÔNG TIN", content: "Điền số điện thoại và chụp ảnh định danh.", img: null }
+    ]
+  },
+  'bank-vpbank': {
+    title: "MỞ APP NGÂN HÀNG VPBANK",
+    reward: "120.000đ",
+    steps: [
+      { id: 1, title: "CÀI ĐẶT VPBANK NEO", content: "Mở link tải app và tiến hành cài đặt.", img: null },
+      { id: 2, title: "ĐỊNH DANH EKYC", content: "Thực hiện xác thực khuôn mặt để mở tài khoản.", img: null }
+    ]
+  },
+  'bank-tpbank': {
+    title: "MỞ APP NGÂN HÀNG TPBANK",
+    reward: "80.000đ",
+    steps: [
+      { id: 1, title: "TẢI APP TPBANK", content: "Tải ứng dụng TPBank Mobile chính thức.", img: null },
+      { id: 2, title: "HOÀN TẤT ĐĂNG KÝ", content: "Đăng nhập và chụp ảnh màn hình thành công.", img: null }
+    ]
+  }
+}
+
+const currentJob = ref<any>(null)
+
+onMounted(() => {
+  const jobId = route.params.id as string
+  if (jobId && jobsData[jobId]) {
+    currentJob.value = jobsData[jobId]
+  } else {
+    setTimeout(() => { if (!currentJob.value) router.push('/') }, 1500)
+  }
+})
+</script>
+
+<template>
+  <div v-if="currentJob" class="min-h-screen bg-[#090e17] text-slate-300 p-4 md:p-8 font-black italic uppercase text-left">
+    
+    <!-- THANH QUAY LẠI -->
+    <div class="flex justify-between items-center mb-8 max-w-4xl mx-auto border-b border-slate-800 pb-4">
+      <button @click="router.back()" class="text-[10px] tracking-[3px] text-slate-500 hover:text-white transition-all flex items-center gap-1 font-black">
+        <span class="text-base font-light not-italic font-sans">✕</span> QUAY LẠI
+      </button>
+      <span class="text-[10px] tracking-[4px] text-slate-600 font-black uppercase">HƯỚNG DẪN CHI TIẾT</span>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-10">
+      
+      <!-- TIÊU ĐỀ & TIỀN THƯỞNG -->
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none mb-5 drop-shadow-lg">
+          {{ currentJob.title }}
+        </h1>
+        <div class="bg-[#052e1f] border border-[#005c3c] rounded-full px-6 py-2.5 w-max mx-auto flex items-center gap-2 shadow-[0_0_20px_rgba(0,223,137,0.1)]">
+          <span class="text-[#f59e0b] text-xl leading-none font-sans">⚡</span>
+          <span class="text-[#00df89] text-base md:text-lg font-black italic uppercase">THƯỞNG: {{ currentJob.reward }}</span>
+        </div>
+      </div>
+
+      <!-- CARD HƯỚNG DẪN -->
+      <div class="bg-[#111726] rounded-[40px] border border-slate-800/50 p-6 md:p-10 shadow-2xl relative">
+        <div class="text-center space-y-5">
+          <p class="text-slate-400 text-xs italic normal-case opacity-70 tracking-wide">Vui lòng thực hiện đúng các bước để được duyệt tiền nhanh nhất.</p>
+
+          <button @click="showGuide = !showGuide" 
+            class="w-full flex items-center gap-4 bg-[#0d121f] border-2 border-emerald-500/30 p-5 rounded-3xl hover:border-emerald-500/60 transition-all">
+            <div class="text-4xl font-sans">📖</div>
+            <div class="text-left">
+              <h3 class="text-lg text-white font-black italic uppercase">XEM HƯỚNG DẪN</h3>
+              <p class="text-[#00df89] text-[8px] font-black uppercase opacity-80 italic">BẤM VÀO ĐỂ XEM CHI TIẾT ẢNH MẪU</p>
+            </div>
+          </button>
+        </div>
+
+        <div v-if="showGuide" class="mt-8 pt-8 border-t border-slate-800/50 space-y-10 animate-in fade-in zoom-in-95 duration-500">
+          <div v-for="step in currentJob.steps" :key="step.id" class="border-b border-slate-800/30 pb-8 last:border-0 last:pb-0">
+            <h4 class="text-[#3b82f6] text-base md:text-lg italic font-black mb-2 uppercase">BƯỚC {{ step.id }}: {{ step.title }}</h4>
+            <p class="text-slate-400 text-[13px] italic normal-case opacity-80 leading-relaxed mb-5 font-medium">{{ step.content }}</p>
+            
+            <!-- KHUNG ẢNH (CHỈ HIỆN KHI MÀY ĐÃ GÁN BIẾN ẢNH) -->
+            <div v-if="step.img" class="overflow-hidden rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-[260px] bg-[#0d121f]">
+              <img :src="step.img" class="w-full h-auto object-cover hover:scale-105 transition-all duration-500 opacity-90 hover:opacity-100" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NÚT NỘP BẰNG CHỨNG -->
+      <section class="bg-[#111726] rounded-[40px] border border-slate-800/50 p-8 md:p-10 text-center shadow-xl">
+        <button @click="router.push('/submit-report')" 
+          class="w-full bg-[#00df89] hover:bg-[#00c578] text-[#090e17] py-5 rounded-2xl text-xl font-black italic uppercase shadow-[0_10px_30px_rgba(0,223,137,0.3)] transition-all active:scale-95">
+          TÔI ĐÃ XONG - NỘP BẰNG CHỨNG
+        </button>
+      </section>
+
+      <div class="text-center opacity-20 text-[8px] tracking-[5px] pb-10 uppercase italic font-black">MMO PRO SECURITY SYSTEM</div>
+    </div>
+  </div>
+  
+  <div v-else class="min-h-screen bg-[#090e17] flex items-center justify-center text-blue-500 font-black italic uppercase">
+    ĐANG KHỞI TẠO DỮ LIỆU...
+  </div>
+</template>
+
+<style scoped>
+.normal-case { text-transform: none; }
+</style>

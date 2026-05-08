@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Thiết lập biến phông chữ Inter */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #090e17; 
+    font-family: var(--font-sans) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ÉP CHỮ THẲNG 100% - KHÔNG CHO PHÉP NGHIÊNG */
+  * {
+    font-style: normal !important;
+  }
+
+  /* ĐỊNH DẠNG TIÊU ĐỀ NÉT DÀY NHƯ ẢNH MẪU */
+  h1, h2, h3, h4, .font-vip {
+    font-weight: 900 !important;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+}
+
+/* Class hỗ trợ cho các con số tiền tệ nhìn sắc nét */
+.font-money {
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}

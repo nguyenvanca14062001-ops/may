@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/images/favicon.png" />
+    
+    <!-- ÉP CHUẨN APP: Chống zoom màn hình (Khách bấm đúp không bị phóng to) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- ĐỔI MÀU THANH TRẠNG THÁI ĐIỆN THOẠI (Status bar tiệp màu với nền Web) -->
+    <meta name="theme-color" content="#090e17" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- NẾU LÀM BƯỚC PWA TAO CHỈ LÚC ĐẦU THÌ BỎ COMMENT DÒNG DƯỚI -->
+    <!-- <link rel="manifest" href="/manifest.json" /> -->
+
+    <title>TRUNG TÂM MMO PRO</title>
+    <style>
+      body { 
+        margin: 0; 
+        background-color: #090e17; 
+        color: white; 
+        /* Khóa hiệu ứng dội ngược màn hình khi vuốt kịch trên iPhone */
+        overscroll-behavior-y: none; 
+      }
+      * { font-style: normal !important; } /* Ép chữ thẳng đứng */
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="src/main.ts"></script>
+  </body>
+</html>
