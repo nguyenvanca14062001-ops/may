@@ -51,96 +51,94 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#090e17] py-6 px-3 flex flex-col items-center font-black italic uppercase text-left selection:bg-blue-500/30">
-    <div v-if="isPageLoading" class="text-blue-500 animate-pulse mt-10 text-xs">ĐANG TẢI...</div>
+  <div class="min-h-screen bg-transparent py-6 px-3 flex flex-col items-center font-black italic uppercase text-left selection:bg-pink-500/30">
+    <div v-if="isPageLoading" class="text-pink-500 animate-pulse mt-10 text-xs tracking-widest font-black uppercase italic">ĐANG TẢI...</div>
     
-    <div v-else class="w-full max-w-2xl">
-      <!-- Nút Quay lại sát lên trên -->
-      <button @click="router.back()" class="text-slate-500 hover:text-white flex items-center gap-1.5 text-[9px] mb-4 transition-colors tracking-[2px]">
-        <span class="font-sans not-italic text-sm leading-none">✕</span> TRỞ LẠI
+    <div v-else class="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+      
+      <button @click="router.back()" class="text-slate-500 hover:text-pink-500 flex items-center gap-1.5 text-[9px] mb-6 transition-colors tracking-[3px]">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg> 
+        QUAY LẠI
       </button>
 
-      <!-- Tiêu đề bóp nhỏ lại -->
-      <h1 class="text-2xl text-white mb-5 tracking-tighter drop-shadow-lg">HỒ SƠ <span class="text-blue-500">CÁ NHÂN</span></h1>
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#ED4E95] to-[#A061F0] drop-shadow-sm mb-2">
+          HỒ SƠ <span class="text-[#ED4E95]">CREATOR</span>
+        </h1>
+        <p class="text-slate-500 text-[11px] font-bold">Nơi lưu giữ hành trình sáng tạo của nàng tại Mây</p>
+      </div>
 
-      <!-- Card chính -->
-      <div class="bg-[#111726] rounded-3xl p-4 md:p-6 border border-slate-800/50 shadow-2xl relative overflow-hidden">
+      <div class="bg-white rounded-[30px] p-6 md:p-8 border border-pink-100 shadow-sm relative overflow-hidden">
         
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/5 rounded-full blur-[50px]"></div>
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-pink-50 rounded-full blur-[50px] pointer-events-none"></div>
 
-        <!-- Info cơ bản -->
-        <div class="flex items-center gap-4 pb-4 border-b border-slate-800/50 relative z-10">
-          <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(37,99,235,0.3)]">👤</div>
+        <div class="flex items-center gap-4 pb-6 border-b border-pink-50 relative z-10">
+          <div class="w-16 h-16 bg-gradient-to-tr from-[#ED4E95] to-[#A061F0] rounded-2xl flex items-center justify-center text-3xl shadow-md border border-white">
+            👩‍💻
+          </div>
           <div>
-            <h2 class="text-lg text-white leading-none mb-1.5">{{ userData?.username || 'MEMBER' }}</h2>
-            <div class="inline-flex items-center gap-1.5 bg-blue-500/10 text-blue-400 text-[8px] px-2 py-0.5 rounded-full border border-blue-500/20">
-              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> CẤP BẬC: THÀNH VIÊN VIP
+            <h2 class="text-xl md:text-2xl text-slate-800 tracking-tighter leading-none mb-1.5">{{ userData?.username || 'CREATOR MỚI' }}</h2>
+            <div class="inline-flex items-center gap-1.5 bg-pink-50 text-pink-600 text-[9px] md:text-[10px] px-3 py-1 rounded-full border border-pink-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span> HẠNG: THÀNH VIÊN VIP ✨
             </div>
           </div>
         </div>
 
-        <!-- Grid thống kê -->
-        <div class="grid grid-cols-2 gap-2 mt-4 mb-4 relative z-10">
-          <div class="bg-[#090d14] p-3 md:p-4 rounded-2xl border border-slate-800/50 shadow-inner">
-            <p class="text-slate-500 text-[8px] tracking-[1px] mb-1">TỔNG THU NHẬP</p>
-            <p class="text-emerald-400 text-lg md:text-xl tracking-tighter">{{ stats.totalEarned.toLocaleString() }}Đ</p>
+        <div class="grid grid-cols-2 gap-3 mt-6 mb-6 relative z-10">
+          <div class="bg-pink-50/50 p-4 md:p-5 rounded-2xl border border-pink-100 hover:shadow-sm transition-all text-center md:text-left">
+            <p class="text-slate-500 text-[9px] tracking-[2px] mb-1">TỔNG NHUẬN BÚT</p>
+            <p class="text-pink-600 text-2xl md:text-3xl tracking-tighter">{{ stats.totalEarned.toLocaleString() }}<span class="text-lg">đ</span></p>
           </div>
-          <div class="bg-[#090d14] p-3 md:p-4 rounded-2xl border border-slate-800/50 shadow-inner">
-            <p class="text-slate-500 text-[8px] tracking-[1px] mb-1">ĐƠN ĐÃ NỘP</p>
-            <p class="text-white text-lg md:text-xl tracking-tighter">{{ stats.total }}</p>
-          </div>
-        </div>
-
-        <!-- Chi tiết trạng thái -->
-        <div class="space-y-2 mb-6 relative z-10">
-          <div class="flex justify-between items-center bg-[#090d14] p-3 rounded-xl border-l-4 border-emerald-500">
-            <span class="text-slate-400 text-[10px]">ĐÃ ĐƯỢC DUYỆT</span>
-            <span class="text-emerald-500 text-base font-black italic">{{ stats.approved }}</span>
-          </div>
-          <div class="flex justify-between items-center bg-[#090d14] p-3 rounded-xl border-l-4 border-yellow-500">
-            <span class="text-slate-400 text-[10px]">ĐANG CHỜ XỬ LÝ</span>
-            <span class="text-yellow-500 text-base font-black italic">{{ stats.pending }}</span>
-          </div>
-          <div class="flex justify-between items-center bg-[#090d14] p-3 rounded-xl border-l-4 border-red-500">
-            <span class="text-slate-400 text-[10px]">ĐƠN BỊ TỪ CHỐI</span>
-            <span class="text-red-500 text-base font-black italic">{{ stats.rejected }}</span>
+          <div class="bg-pink-50/50 p-4 md:p-5 rounded-2xl border border-pink-100 hover:shadow-sm transition-all text-center md:text-left">
+            <p class="text-slate-500 text-[9px] tracking-[2px] mb-1">TỔNG JOB ĐÃ NỘP</p>
+            <p class="text-slate-800 text-2xl md:text-3xl tracking-tighter">{{ stats.total }} <span class="text-sm tracking-normal text-slate-400">JOB</span></p>
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- KHỐI MỐC THƯỞNG NHIỆM VỤ: 10 ĐƠN / 300K -->
-        <!-- ============================================== -->
-        <div class="pt-5 border-t border-slate-800/50 relative z-10">
-          <h3 class="text-xs text-white mb-4 flex items-center gap-2">
-            <span class="text-lg">🎁</span> NHIỆM VỤ THƯỞNG THÊM
+        <div class="space-y-3 mb-8 relative z-10">
+          <div class="flex justify-between items-center bg-green-50 p-4 rounded-xl border-l-4 border-emerald-400">
+            <span class="text-slate-600 text-[11px] tracking-widest">ĐÃ ĐƯỢC DUYỆT</span>
+            <span class="text-emerald-500 text-xl font-black italic tracking-tighter">{{ stats.approved }}</span>
+          </div>
+          <div class="flex justify-between items-center bg-yellow-50 p-4 rounded-xl border-l-4 border-yellow-400">
+            <span class="text-slate-600 text-[11px] tracking-widest">ĐANG CHỜ XỬ LÝ</span>
+            <span class="text-yellow-600 text-xl font-black italic tracking-tighter">{{ stats.pending }}</span>
+          </div>
+          <div class="flex justify-between items-center bg-red-50 p-4 rounded-xl border-l-4 border-rose-400">
+            <span class="text-slate-600 text-[11px] tracking-widest">ĐƠN BỊ TỪ CHỐI</span>
+            <span class="text-rose-500 text-xl font-black italic tracking-tighter">{{ stats.rejected }}</span>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-pink-100 relative z-10">
+          <h3 class="text-sm text-slate-800 mb-4 flex items-center gap-2">
+            <span class="text-xl">🎁</span> NHIỆM VỤ THƯỞNG THÊM
           </h3>
 
-          <div class="relative bg-[#090d14] p-4 md:p-5 rounded-2xl border border-slate-800/50 overflow-hidden">
-            <!-- Hiệu ứng sáng phía sau -->
-            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-600/10 rounded-full blur-[30px]"></div>
+          <div class="relative bg-gradient-to-br from-pink-50 to-purple-50 p-5 md:p-6 rounded-2xl border border-pink-200 overflow-hidden shadow-inner">
             
-            <div class="flex justify-between items-end mb-3 relative z-10">
+            <div class="flex justify-between items-end mb-4 relative z-10">
               <div>
-                <h4 class="text-white text-[11px] md:text-sm tracking-tighter">THƯỞNG MỐC 10 ĐƠN</h4>
-                <p class="text-emerald-400 text-[9px] md:text-[11px] mt-1 drop-shadow-sm">+300.000Đ TIỀN MẶT</p>
+                <h4 class="text-slate-800 text-[13px] md:text-sm tracking-tighter">THƯỞNG MỐC 10 JOB HOÀN THÀNH</h4>
+                <p class="text-[#ED4E95] text-[10px] md:text-[12px] mt-1 tracking-widest font-black">+300.000Đ VÀO VÍ</p>
               </div>
-              <span class="text-slate-500 text-[9px] md:text-[10px]">TIẾN ĐỘ: {{ stats.approved }}/10</span>
+              <span class="text-slate-500 text-[10px] md:text-[11px] bg-white px-2 py-1 rounded-md border border-pink-100">
+                TIẾN ĐỘ: <strong class="text-pink-600">{{ stats.approved }}/10</strong>
+              </span>
             </div>
             
-            <!-- Thanh chạy -->
-            <div class="h-2 w-full bg-[#111726] rounded-full overflow-hidden shadow-inner relative z-10">
-              <div class="h-full bg-gradient-to-r from-emerald-600 to-teal-400 transition-all duration-1000 relative" 
+            <div class="h-3 w-full bg-white rounded-full overflow-hidden shadow-inner border border-pink-100 relative z-10">
+              <div class="h-full bg-gradient-to-r from-[#ED4E95] to-[#A061F0] transition-all duration-1000 relative" 
                    :style="{ width: progress10 + '%' }">
                 <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
               </div>
             </div>
             
-            <!-- Nút nhận -->
-            <button v-if="canClaim10" class="mt-4 w-full py-2.5 bg-emerald-500 text-black rounded-lg text-[9px] font-black hover:scale-95 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] relative z-10">
-              NHẬN THƯỞNG 300K NGAY
+            <button v-if="canClaim10" class="mt-5 w-full py-3 md:py-4 bg-gradient-to-r from-[#ED4E95] to-[#A061F0] text-white rounded-xl text-[11px] md:text-[13px] font-black tracking-widest hover:opacity-90 hover:shadow-lg transition-all active:scale-95 relative z-10">
+              NHẬN THƯỞNG 300K NGAY!
             </button>
-            <p v-else class="mt-4 text-center text-slate-600 text-[8px] tracking-widest opacity-60 relative z-10">
-              HOÀN THÀNH THÊM {{ Math.max(0, 10 - stats.approved) }} ĐƠN NỮA
+            <p v-else class="mt-5 text-center text-slate-500 text-[9px] md:text-[10px] tracking-widest relative z-10 bg-white/60 py-2 rounded-lg border border-pink-100/50">
+              CHĂM CHỈ THÊM <span class="text-pink-600 text-[12px]">{{ Math.max(0, 10 - stats.approved) }}</span> JOB NỮA ĐỂ NHẬN THƯỞNG NÀNG NHÉ!
             </p>
           </div>
         </div>

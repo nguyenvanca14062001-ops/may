@@ -4,36 +4,58 @@
   :root {
     /* Thiết lập biến phông chữ Inter */
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    
+    /* Màu Gradient hồng tím giống ảnh KOC */
+    --koc-gradient: linear-gradient(90deg, #ED4E95 0%, #A061F0 100%);
+    --bg-white-pink: #FFF5F7;
   }
 
-  html, body {
+  /* ÉP MÀU TRẮNG CHO TOÀN BỘ WEB */
+  html, body, #app {
     margin: 0;
     padding: 0;
-    background-color: #090e17; 
+    background-color: var(--bg-white-pink) !important; 
     font-family: var(--font-sans) !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #1f2937; /* Chữ xám đen */
+    min-height: 100vh;
   }
 
-  /* ÉP CHỮ THẲNG 100% - KHÔNG CHO PHÉP NGHIÊNG */
+  /* ÉP CHỮ THẲNG 100% */
   * {
     font-style: normal !important;
   }
 
-  /* ĐỊNH DẠNG TIÊU ĐỀ NÉT DÀY NHƯ ẢNH MẪU */
+  /* TIÊU ĐỀ MÀU TÍM HỒNG ĐẬM */
   h1, h2, h3, h4, .font-vip {
     font-weight: 900 !important;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: #701a75 !important; 
   }
 }
 
-/* Class hỗ trợ cho các con số tiền tệ nhìn sắc nét */
+/* Các class bổ trợ */
 .font-money {
   font-weight: 800;
   letter-spacing: -0.05em;
+  color: #ED4E95;
 }
 
+.btn-koc {
+  background: var(--koc-gradient) !important;
+  color: white !important;
+  border: none !important;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(237, 78, 149, 0.3);
+}
+
+.btn-koc:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Ẩn scrollbar */
 ::-webkit-scrollbar {
   width: 0px;
 }

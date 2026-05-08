@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Footer from '@/components/Footer.vue'
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { auth, db } from '@/firebase' 
@@ -12,12 +13,13 @@ import Sidebar from '@/components/home/Sidebar.vue'
 import JobSection from '@/components/home/JobSection.vue'
 import HistorySection from '@/components/home/HistorySection.vue'
 import InfoSection from '@/components/home/InfoSection.vue'
+import GiftRewardView from '@/components/home/GiftRewardView.vue'
 
 // --- KHỞI TẠO BIẾN TRẠNG THÁI HỆ THỐNG ---
 const router = useRouter()
 const route = useRoute()
 
-// Trạng thái ẩn/hiện số dư (Mặc định là hiện)
+// Trạng thái ẩn/hiện số dư
 const isBalanceVisible = ref(localStorage.getItem('mmo_balance_hide') !== 'true');
 
 const toggleBalance = () => {
@@ -41,7 +43,7 @@ const myReports = ref<any[]>([])
 const myWithdrawals = ref<any[]>([])
 
 // ============================================================================
-// LOGIC POPUP: KHÁCH ĐỌC THÔNG BÁO TỪ ADMIN
+// LOGIC POPUP: THÔNG BÁO TỪ ADMIN
 // ============================================================================
 const dismissedRejections = ref<string[]>(JSON.parse(localStorage.getItem('mmo_dismissed_rejections') || '[]'))
 const unreadRejectedReport = computed(() => {
@@ -65,57 +67,43 @@ const dismissMessage = (id: string) => {
 // LOGIC THÔNG BÁO "NỔ HŨ"
 // ============================================================================
 const randomNotice = ref<any>(null)
-const names = ['TRUNG NGUYỄN', 'HOÀNG ANH', 'MINH TUẤN', 'THANH HẰNG', 'VĂN NAM', 'BÍCH PHƯỢNG', 'QUỐC BẢO', 'KHÁNH LINH', 'TRẦN TÂM', 'SƠN TÙNG', 'ANH VŨ', 'QUANG LÊ', 'MINH ĐỨC', 'HỮU PHÚC', 'TIẾN ĐẠT']
-const banks = ['MB BANK', 'VPBANK', 'TPBANK', 'VIETCOMBANK', 'TECHCOMBANK', 'MOMO', 'MSB BANK']
+const names = ['THANH HẰNG', 'BÍCH PHƯỢNG', 'KHÁNH LINH', 'PHƯƠNG ANH', 'THU THẢO', 'MINH TÚ', 'QUỲNH CHI', 'LAN NGỌC', 'HUYỀN MY', 'BẢO THY']
+const banks = ['MB BANK', 'VPBANK', 'TPBANK', 'VIETCOMBANK', 'TECHCOMBANK', 'MOMO']
 
 const jobList = [
-  { name: 'Đánh giá Google Map', reward: '25.000' },
+  { name: 'Map x Katinat', reward: '30.000' },
   { name: 'App Chứng Khoán', reward: '125.000' },
-  { name: 'Ngân hàng VPBank', reward: '100.000' },
-  { name: 'Ngân hàng TPBank', reward: '100.000' },
-  { name: 'Ngân hàng MSB', reward: '100.000' },
-  { name: 'Đăng bài Threads', reward: '25.000' },
-  { name: 'Lượt xem Threads', reward: '50.000' },
-  { name: 'Giới thiệu bạn bè', reward: '300.000' },
+  { name: 'Mở ví Lady VPBank', reward: '100.000' },
+  { name: 'Edit Video CapCut', reward: '80.000' },
+  { name: 'Reviewer Mỹ Phẩm', reward: '60.000' },
+  { name: 'Viết Blog/Content', reward: '50.000' },
 ]
 
 const triggerNotice = (type: 'job' | 'withdraw') => {
   const name = names[Math.floor(Math.random() * names.length)]
   if (type === 'withdraw') {
     const bank = banks[Math.floor(Math.random() * banks.length)]
-    
-    // ĐÃ FIX: Mốc rút tiền ảo giờ bắt đầu từ 200k trở lên, bơm thêm mấy mốc tiền to cho mờ mắt
-    const withdrawAmounts = ['200.000', '300.000', '350.000', '425.000', '550.000', '750.000', '500.000', '1.000.000', '1.250.000', ]
-    
+    const withdrawAmounts = ['200.000', '300.000', '450.000', '600.000', '1.200.000']
     randomNotice.value = { 
-      type: 'withdraw', name, title: 'Vừa rút thành công', 
-      amount: withdrawAmounts[Math.floor(Math.random() * withdrawAmounts.length)], sub: `Về Ngân hàng ${bank}` 
+      type: 'withdraw', name, title: 'Vừa rút cát-xê', 
+      amount: withdrawAmounts[Math.floor(Math.random() * withdrawAmounts.length)], sub: `Về tài khoản ${bank}` 
     }
   } else {
-    // Phần hoàn thành công việc vẫn giữ nguyên lấy từ danh sách jobList
     const job = jobList[Math.floor(Math.random() * jobList.length)]
     randomNotice.value = { 
-      type: 'job', name, title: 'Vừa hoàn thành', 
-      amount: job.reward, sub: `Công việc: ${job.name}` 
+      type: 'job', name, title: 'Vừa chốt Job', 
+      amount: job.reward, sub: `${job.name}` 
     }
   }
-  setTimeout(() => { randomNotice.value = null }, 2000) 
+  setTimeout(() => { randomNotice.value = null }, 3000) 
 }
 
 const startToasting = () => {
   const jobLoop = () => {
-    const nextJob = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000)
-    setTimeout(() => { 
-      if (!randomNotice.value) triggerNotice('job'); 
-      jobLoop() 
-    }, nextJob)
+    setTimeout(() => { if (!randomNotice.value) triggerNotice('job'); jobLoop() }, Math.random() * 4000 + 4000)
   }
   const withdrawLoop = () => {
-    const nextWithdraw = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000)
-    setTimeout(() => { 
-      if (!randomNotice.value) triggerNotice('withdraw'); 
-      withdrawLoop() 
-    }, nextWithdraw)
+    setTimeout(() => { if (!randomNotice.value) triggerNotice('withdraw'); withdrawLoop() }, Math.random() * 6000 + 8000)
   }
   jobLoop(); withdrawLoop()
 }
@@ -139,41 +127,41 @@ const combinedHistory = computed(() => {
   }).sort((a, b) => b.sortTime - a.sortTime)
 })
 
+// --- VÒNG ĐỜI VÀ LẮNG NGHE FIREBASE ---
 onMounted(() => {
   windowWidth.value = window.innerWidth
-  window.addEventListener('resize', () => { windowWidth.value = window.innerWidth })
-  
+  if (windowWidth.value < 1024) isMenuOpen.value = false;
+
+  window.addEventListener('resize', () => { 
+    windowWidth.value = window.innerWidth 
+    if (windowWidth.value >= 1024) isMenuOpen.value = true;
+  })
+
   startToasting()
-  
   onAuthStateChanged(auth, async (user) => {
     if (user && !isAdminRoute.value) {
       isLoggedIn.value = true
       const giftKey = `gift_${user.uid}`
-      const hasReceivedGift = localStorage.getItem(giftKey)
-      
       onSnapshot(doc(db, "users", user.uid), async (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data()
           username.value = data.username || data.fullName || 'Member'
           userBalance.value = data.balance || 0
-          
-          if (data.balance === 0 && !hasReceivedGift) {
+          if (data.balance === 0 && !localStorage.getItem(giftKey)) {
              try {
                await updateDoc(doc(db, "users", user.uid), { balance: 10000 })
                showWelcomePopup.value = true
                localStorage.setItem(giftKey, 'true')
-             } catch (e) { console.error("Lỗi cộng tiền:", e) }
+             } catch (e) { console.error(e) }
           }
           localStorage.setItem('mmo_username', username.value)
           localStorage.setItem('mmo_balance', String(userBalance.value))
         }
       })
-      
       onSnapshot(query(collection(db, "reports"), where("uid", "==", user.uid)), (snapshot) => {
         myReports.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         isDataLoading.value = false
       })
-      
       onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", user.uid)), (snapshot) => {
         myWithdrawals.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
       })
@@ -186,31 +174,17 @@ onMounted(() => {
 
 const handleNav = (path: string) => {
   if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(30);
-
   const targetPath = path === '/submit' ? '/submit-report' : path;
-  const protectedRoutes = ['/submit', '/submit-report', '/withdraw', '/history'];
-
-  if (!isLoggedIn.value && (protectedRoutes.includes(targetPath) || targetPath.startsWith('/job/'))) {
-    alert('⚠️ ĐĂNG NHẬP ĐỂ TIẾP TỤC!'); router.push('/login'); return;
+  if (!isLoggedIn.value && (['/submit-report', '/withdraw'].includes(targetPath) || targetPath.startsWith('/job/'))) {
+    router.push('/login'); return;
   }
-
-  if (route.path === targetPath) {
-    const mainScroll = document.querySelector('main');
-    if (mainScroll) mainScroll.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    router.push(targetPath);
-  }
-
+  router.push(targetPath);
   if (windowWidth.value < 1024) isMenuOpen.value = false;
 }
 
 const handleReceiveJob = (jobId: string) => {
   if (!isLoggedIn.value) { router.push('/login'); return; }
-  if (jobId === 'APP NGÂN HÀNG' || jobId === 'app-ngan-hang') {
-    showBankModal.value = true
-  } else {
-    router.push(`/job/${jobId}`)
-  }
+  router.push(`/job/${jobId}`)
 }
 
 const handleScrollToHistory = () => {
@@ -233,69 +207,47 @@ const contactSupport = (t: string) => {
 </script>
 
 <template>
-  <div v-if="isAdminRoute" class="min-h-screen bg-[#090e17] text-slate-300 font-sans w-full">
+  <div v-if="isAdminRoute" class="min-h-screen bg-[#FFF5F7] text-slate-700 font-sans w-full text-left italic uppercase font-black">
     <router-view />
   </div>
 
-  <div v-else class="min-h-screen bg-[#090e17] text-slate-300 font-sans flex overflow-x-hidden text-left relative">
+  <div v-else class="min-h-screen bg-[#FFF5F7] text-slate-700 font-sans flex overflow-x-hidden text-left relative">
     
-    <!-- POPUP TẶNG QUÀ TÂN THỦ -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-200/30 rounded-full blur-[120px] animate-pulse pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-200/30 rounded-full blur-[150px] pointer-events-none z-0"></div>
+    
     <Transition name="fade">
-      <div v-if="showWelcomePopup" class="fixed inset-0 z-[4000] flex items-center justify-center px-6">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" @click="showWelcomePopup = false"></div>
-        <div class="relative bg-[#111726] border border-blue-500/30 w-full max-w-md p-8 rounded-[40px] shadow-[0_0_50px_rgba(37,99,235,0.2)] text-center">
-          <div class="relative z-10 space-y-6">
-            <div class="w-20 h-20 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-3xl mx-auto flex items-center justify-center text-4xl animate-bounce">🎁</div>
-            <h2 class="text-3xl text-white font-black italic uppercase tracking-tighter leading-none">Chào mừng <br/><span class="text-blue-500">Tân Thủ!</span></h2>
-            <p class="text-slate-400 text-sm font-bold italic leading-relaxed uppercase">Hệ thống đã cộng 10,000Đ vào ví.</p>
-            <button @click="showWelcomePopup = false" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black italic uppercase shadow-lg active:scale-95">Bắt đầu ngay</button>
-          </div>
+      <div v-if="unreadRejectedReport" class="fixed inset-0 z-[6000] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-pink-900/40 backdrop-blur-md" @click="dismissRejection(unreadRejectedReport.id)"></div>
+        <div class="relative bg-white border-2 border-red-100 w-full max-w-md p-8 rounded-[40px] shadow-2xl text-center">
+          <div class="w-20 h-20 bg-red-50 text-red-500 rounded-3xl mx-auto flex items-center justify-center text-4xl mb-4">⚠️</div>
+          <h2 class="text-2xl text-slate-800 font-black italic uppercase">BÁO CÁO BỊ TỪ CHỐI</h2>
+          <p class="text-slate-500 text-sm font-bold mt-4 bg-red-50 p-4 rounded-2xl border border-red-100 italic">{{ unreadRejectedReport.adminNote }}</p>
+          <button @click="dismissRejection(unreadRejectedReport.id)" class="w-full py-4 mt-6 bg-slate-800 text-white rounded-2xl font-black italic uppercase shadow-lg active:scale-95">Đã hiểu</button>
         </div>
       </div>
     </Transition>
 
-    <!-- 1. POPUP CẢNH BÁO TỪ CHỐI ĐƠN (MÀU ĐỎ) -->
     <Transition name="fade">
-      <div v-if="unreadRejectedReport" class="fixed inset-0 z-[99999] flex items-center justify-center px-6">
-        <div class="absolute inset-0 bg-black/95 backdrop-blur-md"></div>
-        <div class="relative bg-[#111726] border-2 border-red-500/50 w-full max-w-md p-8 rounded-[30px] shadow-[0_0_80px_rgba(239,68,68,0.4)] text-center">
-          <div class="relative z-10 space-y-5">
-            <div class="w-20 h-20 bg-gradient-to-tr from-red-500 to-rose-600 rounded-full mx-auto flex items-center justify-center text-4xl animate-bounce shadow-[0_0_30px_rgba(239,68,68,0.6)]">⚠️</div>
-            <h2 class="text-2xl text-white font-black italic uppercase tracking-tighter leading-none">THÔNG BÁO TỪ <span class="text-red-500">ADMIN</span></h2>
-            <div class="bg-[#0d121f] rounded-xl p-5 border border-slate-800 text-left">
-              <p class="text-slate-500 text-[10px] uppercase tracking-widest font-black mb-1">CÔNG VIỆC BỊ TỪ CHỐI:</p>
-              <p class="text-white text-sm font-black italic mb-4">{{ unreadRejectedReport.jobName || 'Nhiệm vụ MMO' }}</p>
-              <p class="text-red-400 text-[10px] uppercase tracking-widest font-black mb-1">LÝ DO BỊ TỪ CHỐI:</p>
-              <p class="text-white text-sm font-bold italic normal-case bg-red-500/10 border border-red-500/20 p-3 rounded-lg">{{ unreadRejectedReport.note || 'Thông tin cung cấp không hợp lệ. Vui lòng làm lại!' }}</p>
-            </div>
-            <button @click="dismissRejection(unreadRejectedReport.id)" class="w-full py-4 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black italic uppercase shadow-lg active:scale-95 transition-all">TÔI ĐÃ HIỂU VÀ SẼ LÀM LẠI</button>
-          </div>
+      <div v-if="showWelcomePopup" class="fixed inset-0 z-[6000] flex items-center justify-center px-6">
+        <div class="absolute inset-0 bg-pink-900/40 backdrop-blur-md" @click="showWelcomePopup = false"></div>
+        <div class="relative bg-white/80 backdrop-blur-xl border border-white/60 w-full max-w-md p-10 rounded-[40px] shadow-2xl text-center">
+          <div class="w-20 h-20 bg-gradient-to-tr from-[#ED4E95] to-[#A061F0] rounded-3xl mx-auto flex items-center justify-center text-4xl animate-bounce shadow-lg">🎁</div>
+          <h2 class="text-4xl text-slate-800 font-black italic uppercase tracking-tighter mt-6">CHÀO MỪNG ✨</h2>
+          <p class="text-slate-500 text-[11px] font-bold mt-4 uppercase">Hệ thống gửi tặng 10,000Đ vào ví nàng rồi nhé.</p>
+          <button @click="showWelcomePopup = false" class="w-full py-5 mt-8 bg-gradient-to-r from-[#ED4E95] to-[#A061F0] text-white rounded-[20px] font-black italic active:scale-95 text-lg">Bắt đầu ngay</button>
         </div>
       </div>
     </Transition>
 
-    <!-- 2. POPUP LỜI NHẮN CỦA ADMIN (MÀU XANH) -->
     <Transition name="fade">
-      <div v-if="unreadMessageReport && !unreadRejectedReport" class="fixed inset-0 z-[99998] flex items-center justify-center px-6">
-        <div class="absolute inset-0 bg-black/95 backdrop-blur-md"></div>
-        <div class="relative bg-[#111726] border-2 border-blue-500/50 w-full max-w-md p-8 rounded-[30px] shadow-[0_0_80px_rgba(59,130,246,0.4)] text-center">
-          <div class="relative z-10 space-y-5">
-            <div class="w-20 h-20 bg-gradient-to-tr from-blue-500 to-cyan-400 rounded-full mx-auto flex items-center justify-center text-4xl animate-bounce shadow-[0_0_30px_rgba(59,130,246,0.6)]">📩</div>
-            <h2 class="text-2xl text-white font-black italic uppercase tracking-tighter leading-none">TIN NHẮN TỪ <span class="text-blue-500">ADMIN</span></h2>
-            <div class="bg-[#0d121f] rounded-xl p-5 border border-slate-800 text-left">
-              <p class="text-slate-500 text-[10px] uppercase tracking-widest font-black mb-1">ĐỐI VỚI CÔNG VIỆC ĐANG CHỜ:</p>
-              <p class="text-white text-sm font-black italic mb-4">{{ unreadMessageReport.jobName || 'Nhiệm vụ MMO' }}</p>
-              <p class="text-blue-400 text-[10px] uppercase tracking-widest font-black mb-1">LỜI NHẮN:</p>
-              <p class="text-white text-sm font-bold italic normal-case bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg">{{ unreadMessageReport.note }}</p>
-            </div>
-            <button @click="dismissMessage(unreadMessageReport.id)" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black italic uppercase shadow-lg active:scale-95 transition-all">ĐÃ ĐỌC LỜI NHẮN VÀ TẮT</button>
-          </div>
-        </div>
-      </div>
+      <div v-if="isMenuOpen" @click="isMenuOpen = false" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[4900] lg:hidden"></div>
     </Transition>
 
-    <!-- SIDEBAR BÊN TRÁI -->
-    <div :class="['fixed lg:sticky top-0 left-0 h-screen z-[1500] transition-all duration-500 bg-[#111726] border-r border-slate-800 overflow-hidden flex-shrink-0', isMenuOpen ? 'w-72 translate-x-0' : 'w-0 -translate-x-full']">
+    <div :class="['fixed lg:sticky top-0 left-0 h-screen z-[5000] lg:z-[1500] transition-all duration-500 bg-white/95 backdrop-blur-2xl border-r border-white/60 overflow-hidden flex-shrink-0', isMenuOpen ? 'w-[85vw] max-w-[300px] lg:w-72 translate-x-0' : 'w-0 -translate-x-full']">
+      <button @click="isMenuOpen = false" class="absolute top-5 right-5 z-[5100] w-9 h-9 flex items-center justify-center bg-pink-50 text-pink-500 rounded-full lg:hidden">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
       <Sidebar 
         v-if="isMenuOpen" 
         :isLoggedIn="isLoggedIn" 
@@ -311,36 +263,31 @@ const contactSupport = (t: string) => {
       />
     </div>
 
-    <!-- KHỐI NỘI DUNG CHÍNH (MAIN CONTENT) -->
-    <div class="flex-1 flex flex-col transition-all duration-500 min-w-0 bg-[#090e17] w-full relative">
-      
-      <!-- HEADER HIỂN THỊ SỐ DƯ -->
-      <header class="h-16 md:h-20 flex items-center justify-between px-4 md:px-10 sticky top-0 bg-[#090e17]/90 backdrop-blur-xl z-[1100] border-b border-slate-800/50 shadow-sm">
+    <div class="flex-1 flex flex-col transition-all duration-500 min-w-0 bg-transparent w-full relative z-10">
+      <header class="h-16 md:h-20 flex items-center justify-between px-4 md:px-10 sticky top-0 bg-white/60 backdrop-blur-2xl z-[1100] border-b border-white/50 shadow-sm">
         <div class="flex items-center gap-3">
-          <button @click.stop="isMenuOpen = !isMenuOpen" class="p-2 md:p-3 bg-[#111726] border border-slate-800 rounded-xl md:rounded-2xl transition-all active:scale-95 hidden lg:block">
-            <svg v-if="!isMenuOpen" class="w-5 h-5 md:w-6 md:h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
-            <svg v-else class="w-5 h-5 md:w-6 md:h-6 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
+          <button @click.stop="isMenuOpen = !isMenuOpen" class="p-2 bg-white/80 border border-pink-100 rounded-[14px] shadow-sm">
+            <svg v-if="!isMenuOpen" class="w-6 h-6 text-[#ED4E95]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <svg v-else class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
-          <span class="text-white font-black italic tracking-tighter text-lg lg:hidden">MMO <span class="text-blue-500">PRO</span></span>
+          <span class="text-slate-800 font-black italic tracking-tighter text-xl lg:hidden ml-2">MÂY <span class="text-[#ED4E95]">FREELANCE</span></span>
         </div>
         
-        <div class="flex items-center gap-2 md:gap-4 bg-[#111726] border border-slate-800 pl-3 md:pl-5 pr-1 py-1 md:py-1.5 rounded-full shadow-inner ml-auto">
-          <div class="flex items-center gap-1 md:gap-2">
-            <span class="text-slate-500 text-[8px] md:text-[9px] uppercase hidden sm:inline-block italic font-black">Ví:</span>
-            <span class="text-white text-sm md:text-xl font-black italic tracking-tighter min-w-[60px] md:min-w-[90px] text-right">
-              {{ isLoggedIn ? (isBalanceVisible ? userBalance.toLocaleString() : '******') : '0' }} 
-              <span class="text-blue-500 text-[9px] md:text-[10px]">đ</span>
+        <div class="flex items-center gap-4 bg-white/80 border border-white shadow-sm pl-5 pr-1.5 py-1.5 rounded-full ml-auto uppercase italic font-black">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-800 text-sm md:text-xl font-black italic tracking-tighter">
+              {{ isLoggedIn ? (isBalanceVisible ? userBalance.toLocaleString() : '******') : '0' }} <span class="text-[#ED4E95] text-[12px]">đ</span>
             </span>
-            <button @click="toggleBalance" class="text-slate-500 hover:text-blue-400 px-1 active:scale-90">
-              <svg v-if="isBalanceVisible" class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-              <svg v-else class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L14.5 5.252M12 5c4.478 0 8.268 2.943 9.542 7a10.025 10.05 0 01-4.132 5.411m0 0L21 21M3 3l18 18" /></svg>
+            <button @click="toggleBalance" class="text-pink-300 hover:text-pink-500 transition-colors px-1">
+              <svg v-if="isBalanceVisible" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
             </button>
           </div>
-          <button @click="handleNav('/withdraw')" class="w-6 h-6 md:w-8 md:h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.4)] active:scale-90 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" /></svg></button>
+          <button @click="handleNav('/withdraw')" class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-r from-[#ED4E95] to-[#A061F0] text-white rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform">+</button>
         </div>
       </header>
 
-      <main class="flex-1 overflow-y-auto p-4 md:p-10 pb-32 md:pb-10 space-y-10 custom-scrollbar relative text-left">
+      <main class="flex-1 overflow-y-auto p-4 md:p-10 pb-44 md:pb-10 space-y-10 relative italic uppercase font-black">
         <template v-if="route.path === '/'">
            <JobSection 
              :username="username" 
@@ -350,161 +297,78 @@ const contactSupport = (t: string) => {
              @routerPush="handleNav" 
              @contactSupport="contactSupport" 
            />
-           <HistorySection id="history-section" :isLoggedIn="isLoggedIn" :isDataLoading="isDataLoading" :myReports="combinedHistory" />
+           <HistorySection 
+             id="history-section" 
+             :isLoggedIn="isLoggedIn" 
+             :isDataLoading="isDataLoading" 
+             :myReports="combinedHistory" 
+           />
            <InfoSection @contactSupport="contactSupport" />
-           
-           <footer class="mt-20 border-t border-slate-800/50 bg-[#0d121f] pt-16 pb-40 md:pb-8 relative z-[100] italic uppercase font-black rounded-t-3xl overflow-hidden">
-             <div class="max-w-7xl mx-auto px-6 text-left">
-               <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
-                 <div class="space-y-4">
-                   <div class="flex items-center gap-4">
-                     <img src="/images/mmo-logo.png" alt="MMO PRO" class="w-16 h-16 object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-                     <div class="flex flex-col">
-                       <h2 class="text-3xl text-white tracking-tighter leading-none uppercase">MMO PRO</h2>
-                       <span class="text-blue-500 font-black text-xs tracking-[2px]">SYSTEM PRO</span>
-                     </div>
-                   </div>
-                   <p class="text-slate-500 text-[11px] normal-case font-bold max-w-xs italic leading-relaxed">
-                     Hệ thống kiếm tiền online uy tín số 1 Việt Nam. <br>
-                     Thanh toán minh bạch, bảo mật tuyệt đối 24/7.
-                   </p>
-                 </div>
-                 
-                 <div class="space-y-6">
-                   <h3 class="text-white text-sm tracking-[2px] border-l-4 border-blue-600 pl-4 uppercase font-black italic">Đối tác thanh toán</h3>
-                   <div class="grid grid-cols-4 gap-y-6 gap-x-4 items-center">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/02/Logo-MB-Bank-Transparent-B.png" class="bank-logo" alt="MB Bank">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-MoMo-Transparent.png" class="bank-logo" alt="MoMo">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png" class="bank-logo" alt="VNPay">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-Techcombank.png" class="bank-logo" alt="Techcombank">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/02/Logo-Vietcombank.png" class="bank-logo" alt="Vietcombank">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-TPBank.png" class="bank-logo" alt="TP Bank">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-ACB.png" class="bank-logo" alt="ACB">
-                     <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-VPBank.png" class="bank-logo" alt="VP Bank">
-                   </div>
-                 </div>
-                 
-                 <div class="space-y-6">
-                   <h3 class="text-white text-sm tracking-[2px] border-l-4 border-blue-600 pl-4 uppercase font-black italic">Hỗ trợ cộng đồng</h3>
-                   <div class="flex flex-col gap-3 font-black italic uppercase">
-                     <button @click="contactSupport('facebook')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[11px] shadow-lg font-black italic uppercase transition-all active:scale-95">Fanpage Messenger</button>
-                     <button @click="contactSupport('zalo')" class="w-full py-3 bg-[#1a2333] border border-white/5 text-white rounded-xl text-[11px] font-black italic uppercase transition-all active:scale-95">Nhóm Zalo Cộng Đồng</button>
-                   </div>
-                 </div>
-               </div>
-               <div class="pt-8 border-t border-slate-800/30 text-[9px] font-black text-slate-600 tracking-[1px] uppercase italic text-center md:text-left">
-                 <p>COPYRIGHT © 2026 MMO PRO SYSTEM. ALL RIGHTS RESERVED.</p>
-               </div>
-             </div>
-           </footer>
+           <Footer />
         </template>
+
+        <template v-else-if="route.path === '/jobs-me'">
+           <GiftRewardView :myReports="myReports" :username="username" />
+        </template>
+
         <router-view v-else />
       </main>
     </div>
 
-    <!-- MODAL BANK (BOTTOM SHEET TRƯỢT LÊN) -->
-    <div v-if="showBankModal" class="fixed inset-0 z-[5000] flex items-end lg:items-center justify-center">
-      <div @click="showBankModal = false" class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity"></div>
-      
-      <div class="relative w-full lg:max-w-md bg-[#111726] border-t lg:border border-slate-800 rounded-t-[40px] lg:rounded-[35px] p-8 md:p-10 shadow-[0_-20px_60px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom duration-300 lg:zoom-in lg:slide-in-from-bottom-0">
-        <div class="w-12 h-1.5 bg-slate-800 rounded-full mx-auto mb-6 lg:hidden"></div>
-        <h3 class="text-xl text-white border-l-4 border-blue-600 pl-4 mb-8 font-black uppercase italic tracking-tighter">Chọn Ngân Hàng</h3>
-        
-        <div class="space-y-4 font-bold uppercase italic font-black pb-10 lg:pb-0">
-          <div v-for="bank in [{ id: 'msb-bank', name: 'MSB - CÁ NHÂN' }, { id: 'vpbank', name: 'VPBank NEO' }, { id: 'tpbank', name: 'TPBank MOBILE' }]" 
-               :key="bank.id" 
-               @click="() => { showBankModal = false; router.push(`/job/${bank.id}`) }"
-               class="flex items-center justify-between p-6 bg-[#0d121f] border border-slate-800 rounded-2xl cursor-pointer hover:border-blue-500 transition-all active:scale-95 shadow-lg">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-blue-500 text-xs border border-slate-800">🏦</div>
-              <span class="text-white text-sm tracking-tighter">{{ bank.name }}</span>
-            </div>
-            <span class="text-blue-500 font-black font-sans italic">➜</span>
-          </div>
-          <button @click="showBankModal = false" class="w-full py-4 mt-4 bg-slate-900 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest lg:hidden">ĐÓNG LẠI</button>
-        </div>
-      </div>
-    </div>
+    <nav class="fixed bottom-5 left-4 right-4 h-[90px] lg:hidden z-[5000] flex justify-between items-center px-2 md:px-4 bg-white/95 backdrop-blur-3xl rounded-[40px] shadow-[0_20px_50px_rgba(237,78,149,0.2)] border-[3px] border-white">
 
-    <!-- BOTTOM NAVIGATION BAR: ĐÃ GẮN CLASS BẤT TỬ ĐỂ LÊN MÀU XÁM XANH -->
-    <nav class="premium-bottom-nav fixed bottom-0 left-0 w-full lg:hidden z-[4000] flex justify-between items-end px-1 pb-6 pt-3 shadow-[0_-15px_40px_rgba(0,0,0,0.9)]">
-       
-       <button @click="handleNav('/')" class="flex flex-col items-center gap-1.5 w-[20%] group relative">
-         <div class="absolute -top-3 w-8 h-1.5 bg-blue-500 rounded-b-full shadow-[0_0_12px_rgba(59,130,246,0.9)]" v-if="route.path === '/'"></div>
-         <svg class="w-6 h-6 transition-all duration-300 group-active:scale-90" :class="route.path === '/' ? 'text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]' : 'text-slate-400'" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3l10 9h-3v9h-14v-9h-3z"/></svg>
-         <span class="text-[8.5px] font-black tracking-widest transition-colors duration-300" :class="route.path === '/' ? 'text-blue-400' : 'text-slate-400'">TRANG CHỦ</span>
-       </button>
-       
-       <button @click="handleScrollToHistory()" class="flex flex-col items-center gap-1.5 w-[20%] group relative">
-         <svg class="w-6 h-6 text-slate-400 group-hover:text-blue-400 transition-all duration-300 group-active:scale-90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-         <span class="text-[8.5px] font-black tracking-widest text-slate-400 group-hover:text-blue-400 transition-colors">LỊCH SỬ</span>
-       </button>
-       
-       <button @click="handleNav('/withdraw')" class="relative -top-7 flex flex-col items-center justify-center w-[20%] group z-50">
-         <div class="absolute inset-0 bg-blue-500/20 rounded-full blur-xl group-hover:bg-blue-500/40 transition-all duration-500"></div>
-         <!-- Nút giữa cũng được gắn class để viền hòa làm 1 với nền Nav -->
-         <div class="withdraw-btn-border relative w-16 h-16 bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 rounded-full flex items-center justify-center text-white border-[6px] shadow-[0_10px_25px_rgba(37,99,235,0.6)] group-active:scale-95 transition-transform duration-300">
-           <svg class="w-7 h-7 drop-shadow-md" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg>
+       <button @click="handleNav('/')" class="flex flex-col items-center gap-1 w-[20%] group">
+         <div :class="['w-[52px] h-[52px] rounded-[22px] flex items-center justify-center transition-all duration-300', route.path === '/' ? 'bg-pink-50 shadow-inner scale-110 -translate-y-1' : 'bg-transparent']">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/House/3D/house_3d.png" class="w-11 h-11 object-contain drop-shadow-md" alt="Home">
          </div>
-         <span class="text-[10px] font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 mt-2 tracking-[0.2em] drop-shadow-lg">RÚT TIỀN</span>
-       </button>
-       
-       <button @click="handleNav('/submit-report')" class="flex flex-col items-center gap-1.5 w-[20%] group relative">
-         <div class="absolute -top-3 w-8 h-1.5 bg-blue-500 rounded-b-full shadow-[0_0_12px_rgba(59,130,246,0.9)]" v-if="route.path.includes('submit')"></div>
-         <svg class="w-6 h-6 transition-all duration-300 group-active:scale-90" :class="route.path.includes('submit') ? 'text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]' : 'text-slate-400 group-hover:text-blue-400'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-         <span class="text-[8.5px] font-black tracking-widest transition-colors duration-300" :class="route.path.includes('submit') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400'">BÁO CÁO</span>
+         <span class="text-[9px] font-black tracking-widest uppercase mt-0.5" :class="route.path === '/' ? 'text-[#ED4E95]' : 'text-slate-400'">HOME</span>
        </button>
 
-       <button @click="isMenuOpen = true" class="flex flex-col items-center gap-1.5 w-[20%] group relative">
-         <svg class="w-6 h-6 text-slate-400 group-hover:text-blue-400 transition-all duration-300 group-active:scale-90" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-         <span class="text-[8.5px] font-black tracking-widest text-slate-400 group-hover:text-blue-400 transition-colors">MENU</span>
+       <button @click="handleNav('/jobs-me')" class="flex flex-col items-center gap-1 w-[20%] group relative">
+         <div class="absolute -top-2 -right-1 z-20 animate-bounce">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Fire/3D/fire_3d.png" class="w-6 h-6 drop-shadow-[0_0_10px_rgba(255,165,0,0.8)]" alt="Hot">
+         </div>
+         <div :class="['w-[52px] h-[52px] rounded-[22px] flex items-center justify-center transition-all duration-300', route.path === '/jobs-me' ? 'bg-orange-50 shadow-inner scale-110 -translate-y-1' : 'bg-transparent']">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Wrapped%20gift/3D/wrapped_gift_3d.png" class="w-11 h-11 object-contain drop-shadow-md" alt="Gift">
+         </div>
+         <span class="text-[8px] font-black tracking-tighter uppercase leading-none text-center" :class="route.path === '/jobs-me' ? 'text-orange-500' : 'text-slate-400'">NHẬN QUÀ <br/> 300K</span>
+       </button>
+
+       <div class="relative w-[20%] flex justify-center">
+         <div class="absolute -bottom-1 text-[8px] font-black text-[#ED4E95] whitespace-nowrap tracking-widest uppercase">RÚT CÁT-XÊ</div>
+         <button @click="handleNav('/withdraw')" class="absolute bottom-3 w-[70px] h-[70px] bg-gradient-to-tr from-[#ED4E95] to-[#A061F0] rounded-[26px] flex items-center justify-center text-white border-[6px] border-[#FFF5F7] shadow-[0_15px_30px_rgba(237,78,149,0.4)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 z-10 group">
+           <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Money%20with%20wings/3D/money_with_wings_3d.png" class="w-10 h-10 drop-shadow-lg group-hover:rotate-12 transition-transform" alt="Withdraw">
+         </button>
+       </div>
+
+       <button @click="handleScrollToHistory" class="flex flex-col items-center gap-1 w-[20%] group">
+         <div class="w-[52px] h-[52px] rounded-[22px] flex items-center justify-center transition-all duration-300 bg-transparent">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Alarm%20clock/3D/alarm_clock_3d.png" class="w-11 h-11 object-contain drop-shadow-md opacity-90" alt="History">
+         </div>
+         <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase mt-0.5">LỊCH SỬ</span>
+       </button>
+
+       <button @click="isMenuOpen = true" class="flex flex-col items-center gap-1 w-[20%] group">
+         <div class="w-[52px] h-[52px] rounded-[22px] flex items-center justify-center transition-all duration-300 bg-transparent">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Hamburger/3D/hamburger_3d.png" class="w-11 h-11 object-contain drop-shadow-md opacity-90" alt="Menu">
+         </div>
+         <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase mt-0.5">MENU</span>
        </button>
     </nav>
 
-    <!-- NỔ HŨ -->
     <Transition name="slide-up">
-      <div v-if="randomNotice" 
-           :style="{ left: isMenuOpen && windowWidth >= 1024 ? '320px' : '20px' }"
-           class="fixed bottom-[100px] lg:bottom-10 z-[5000] flex items-center gap-4 bg-[#111726]/95 backdrop-blur-xl border border-blue-500/40 p-4 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[280px] transition-all duration-300 scale-90 md:scale-100">
-        <div :class="['w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-lg', randomNotice.type === 'withdraw' ? 'bg-gradient-to-tr from-emerald-500 to-teal-500' : 'bg-gradient-to-tr from-orange-500 to-red-500']">
-          {{ randomNotice.type === 'withdraw' ? '💰' : '🔥' }}
+      <div v-if="randomNotice" class="fixed bottom-[110px] lg:bottom-10 left-4 md:left-8 z-[5000] flex items-center gap-4 bg-white/80 backdrop-blur-2xl border border-white/60 p-4 rounded-[24px] shadow-2xl min-w-[280px] italic uppercase font-black">
+        <div :class="['w-12 h-12 rounded-[18px] flex items-center justify-center text-white text-xl shadow-inner', randomNotice.type === 'withdraw' ? 'bg-indigo-500' : 'bg-[#ED4E95]']">
+          {{ randomNotice.type === 'withdraw' ? '💸' : '✨' }}
         </div>
         <div class="flex flex-col text-left leading-tight">
-          <span class="text-white text-[11px] font-black italic tracking-tighter uppercase">{{ randomNotice.name }}</span>
-          <span :class="['text-[13px] font-black italic', randomNotice.type === 'withdraw' ? 'text-emerald-400' : 'text-orange-400']">{{ randomNotice.title }} {{ randomNotice.amount }}Đ</span>
-          <span class="text-slate-500 text-[8px] font-bold uppercase mt-0.5 tracking-widest italic opacity-80">{{ randomNotice.sub }}</span>
+          <span class="text-slate-800 text-[11px] font-black">{{ randomNotice.name }}</span>
+          <span :class="['text-[14px] font-black', randomNotice.type === 'withdraw' ? 'text-indigo-600' : 'text-[#ED4E95]']">{{ randomNotice.title }} {{ randomNotice.amount }}Đ</span>
+          <span class="text-slate-500 text-[9px] font-bold tracking-widest mt-0.5">{{ randomNotice.sub }}</span>
         </div>
       </div>
     </Transition>
 
-    <!-- FLOATING CONTACTS BONG BÓNG -->
-    <div class="fixed bottom-4 right-2 md:bottom-8 md:right-8 z-[999] hidden lg:flex flex-col gap-4 items-end scale-75 md:scale-100 origin-bottom-right">
-      <div class="flex items-center group cursor-pointer" @click="contactSupport('facebook')">
-        <div class="mr-4 text-right overflow-hidden italic uppercase hidden md:block whitespace-nowrap">
-          <p class="text-[9px] text-indigo-400 font-black tracking-[2px] mb-1 opacity-80 animate-jump-delay">GIẢI ĐÁP THẮC MẮC</p>
-          <p class="text-white text-sm font-black italic uppercase tracking-tighter">LIÊN HỆ FANPAGE</p>
-        </div>
-        <div class="w-16 h-16 bg-[#1877F2] rounded-full shadow-lg flex items-center justify-center text-white flex-shrink-0">
-          <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        </div>
-      </div>
-      <div class="flex items-center group cursor-pointer" @click="contactSupport('zalo')">
-        <div class="mr-4 text-right overflow-hidden italic uppercase hidden md:block whitespace-nowrap">
-          <p class="text-[9px] text-blue-500 font-black tracking-[2px] mb-1 opacity-80 animate-jump-delay">CỘNG ĐỒNG MMO</p>
-          <p class="text-white text-sm font-black italic uppercase tracking-tighter">THAM GIA NHÓM</p>
-        </div>
-        <div class="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center flex-shrink-0">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" class="w-10 h-10 object-contain" />
-        </div>
-      </div>
-    </div>
-
-    <!-- NỀN MỜ VÀ NÚT TẮT KHI MỞ MENU TRÊN ĐIỆN THOẠI -->
-    <div v-if="isMenuOpen && windowWidth < 1024" @click="isMenuOpen = false" class="fixed inset-0 bg-black/80 z-[1200] lg:hidden backdrop-blur-sm transition-opacity"></div>
-    <button v-if="isMenuOpen && windowWidth < 1024" @click.stop="isMenuOpen = false" class="fixed top-4 left-4 z-[5000] p-3 bg-[#111726] border border-slate-800 rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-all active:scale-95 flex items-center justify-center">
-      <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
-    </button>
-    
     <AppBrowserBlocker />
     <RewardPopup />
 
@@ -512,50 +376,10 @@ const contactSupport = (t: string) => {
 </template>
 
 <style>
-/* =======================================================
-   CSS ÉP MÀU CHO THANH BOTTOM NAV (KHÔNG THỂ BỊ LỖI CACHE)
-   ======================================================= */
-.premium-bottom-nav {
-  background-color: #1e2a40 !important; /* Màu xám xanh đậm siêu nổi */
-  border-top: 2px solid #334563 !important; /* Kẻ viền trên màu xám bạc rõ nét */
-}
-.withdraw-btn-border {
-  border-color: #1e2a40 !important; /* Ép màu viền nút Rút Tiền khớp với thanh Nav */
-}
-
-
-/* CSS CŨ CỦA WEB */
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #fbcfe8; border-radius: 10px; }
 .slide-up-enter-active, .slide-up-leave-active { transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .slide-up-enter-from { opacity: 0; transform: translateY(80px) scale(0.6); }
-.slide-up-leave-to { opacity: 0; transform: translateX(-80px) scale(0.9); }
-
 .fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
-
-@keyframes jump-cycle { 
-  0%, 40%, 100% { transform: translateY(0); opacity: 1; } 
-  5%, 15%, 25% { transform: translateY(-10px); } 
-  10%, 20%, 30% { transform: translateY(0); } 
-  45% { opacity: 0; transform: scale(0.5); } 
-  55% { opacity: 1; transform: scale(1.1); } 
-}
-
-.animate-jump-cycle { animation: jump-cycle 4s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.animate-jump-delay { animation: jump-cycle 4s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 0.1s; }
-
-.bank-logo { 
-  height: 25px; 
-  width: auto; 
-  object-fit: contain; 
-  filter: brightness(0) invert(1) opacity(0.6); 
-  transition: all 0.3s ease; 
-  cursor: pointer; 
-}
-.bank-logo:hover { 
-  filter: brightness(0) invert(1) opacity(1); 
-  transform: scale(1.1); 
-}
 </style>

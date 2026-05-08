@@ -113,26 +113,11 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#090e17] text-slate-300 font-sans flex flex-col overflow-x-hidden text-left uppercase italic font-black relative pb-32 lg:pb-0">
+  <div class="min-h-screen bg-[#FFF5F7] text-slate-700 font-sans flex flex-col overflow-x-hidden text-left uppercase italic font-black relative pb-32 lg:pb-0">
     
-    <!-- ẨN HOÀN TOÀN MOBILE HEADER ĐỂ NHƯỜNG CHỖ CHO BOTTOM NAV -->
-    <header class="hidden fixed top-0 left-0 right-0 h-16 bg-[#111726]/95 backdrop-blur-xl border-b border-slate-800/50 z-[100] items-center justify-between px-6">
-      <button @click="isMenuOpen = !isMenuOpen" class="text-white text-2xl p-2 -ml-2 font-sans italic">☰</button>
-      <div class="text-white font-black tracking-tighter uppercase text-sm">MMO <span class="text-blue-500">PRO</span></div>
-      
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 bg-[#1a233a] border border-slate-700/50 pl-3 pr-1 py-1 rounded-full shadow-inner">
-          <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-          </svg>
-          <span class="text-white text-[11px] font-black tracking-tight leading-none font-sans">
-            {{ isLoggedIn ? userBalance.toLocaleString() : '0' }} <span class="text-blue-500 text-[9px] font-bold">Đ</span>
-          </span>
-          <button @click="!isLoggedIn ? router.push('/login') : handleQuickJob()" class="w-6 h-6 bg-blue-600 hover:bg-blue-500 text-white rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" /></svg>
-          </button>
-        </div>
-      </div>
+    <header class="hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-xl border-b border-pink-100 z-[100] items-center justify-between px-6">
+      <button @click="isMenuOpen = !isMenuOpen" class="text-pink-600 text-2xl p-2 -ml-2 font-sans italic">☰</button>
+      <div class="text-pink-600 font-black tracking-tighter uppercase text-sm">MMO <span class="text-purple-500">PRO</span></div>
     </header>
 
     <div class="flex flex-1">
@@ -142,7 +127,6 @@ const logout = async () => {
         @requireAuth="(p) => router.push(p)" @scrollToHistory="handleScrollToHistory" @contactSupport="contactSupport"
       />
 
-      <!-- Đã đẩy nội dung lên (bỏ pt-20 cũ đi) cho đỡ trống -->
       <main class="flex-1 min-w-0 px-4 md:px-10 pb-10 pt-10 lg:pt-10 space-y-10">
         <JobSection 
           :username="username" :isLoggedIn="isLoggedIn" :userBalance="userBalance" :totalWithdrawn="totalWithdrawn"
@@ -153,56 +137,54 @@ const logout = async () => {
       </main>
     </div>
 
-    <!-- BANK MODAL TRƯỢT TỪ DƯỚI LÊN (BOTTOM SHEET) -->
     <div v-if="showBankModal" class="fixed inset-0 z-[5000] flex items-end lg:items-center justify-center">
-      <div @click="showBankModal = false" class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity"></div>
+      <div @click="showBankModal = false" class="absolute inset-0 bg-pink-900/40 backdrop-blur-md transition-opacity"></div>
       
-      <div class="relative w-full lg:max-w-md bg-[#111726] border-t lg:border border-slate-800 rounded-t-[40px] lg:rounded-[35px] p-8 md:p-10 shadow-[0_-20px_60px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom duration-500 lg:zoom-in lg:slide-in-from-bottom-0">
-        <div class="w-12 h-1.5 bg-slate-800 rounded-full mx-auto mb-6 lg:hidden"></div>
+      <div class="relative w-full lg:max-w-md bg-white border-t lg:border border-pink-100 rounded-t-[40px] lg:rounded-[35px] p-8 md:p-10 shadow-[0_-20px_60px_rgba(237,78,149,0.2)] animate-in slide-in-from-bottom duration-500 lg:zoom-in lg:slide-in-from-bottom-0">
+        <div class="w-12 h-1.5 bg-pink-100 rounded-full mx-auto mb-6 lg:hidden"></div>
 
-        <h3 class="text-xl text-white border-l-4 border-blue-600 pl-4 mb-8 font-black uppercase italic tracking-tighter">Chọn Ngân Hàng</h3>
+        <h3 class="text-xl text-pink-700 border-l-4 border-pink-500 pl-4 mb-8 font-black uppercase italic tracking-tighter">Chọn Ngân Hàng</h3>
         
         <div class="space-y-4 font-bold uppercase italic font-black pb-10 lg:pb-0">
           <div v-for="bank in [{ id: 'msb-bank', name: 'MSB' }, { id: 'vpbank', name: 'VPBank' }, { id: 'tpbank', name: 'TPBank' }]" 
             :key="bank.id" @click="() => { showBankModal = false; router.push(`/job/${bank.id}`) }"
-            class="flex items-center justify-between p-6 bg-[#0d121f] border border-slate-800 rounded-2xl cursor-pointer hover:border-blue-500 transition-all group active:scale-95 shadow-lg"
+            class="flex items-center justify-between p-6 bg-pink-50/50 border border-pink-100 rounded-2xl cursor-pointer hover:border-pink-500 transition-all group active:scale-95 shadow-sm"
           >
              <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-blue-500 text-xs border border-slate-800">🏦</div>
-              <span class="text-white text-sm tracking-tighter">{{ bank.name }}</span>
+              <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-pink-500 text-xs border border-pink-100">🏦</div>
+              <span class="text-pink-800 text-sm tracking-tighter">{{ bank.name }}</span>
             </div>
-            <span class="text-blue-500 font-black font-sans italic">➜</span>
+            <span class="text-pink-500 font-black font-sans italic">➜</span>
           </div>
-          <button @click="showBankModal = false" class="w-full py-4 mt-4 bg-slate-900 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest lg:hidden">ĐÓNG LẠI</button>
+          <button @click="showBankModal = false" class="w-full py-4 mt-4 bg-pink-100 text-pink-600 rounded-2xl text-[10px] font-black uppercase tracking-widest lg:hidden">ĐÓNG LẠI</button>
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM NAV: ĐÃ GẮN CLASS FLEX (BẮT BUỘC HIỆN TRÊN MOBILE) -->
-    <nav class="fixed bottom-0 left-0 w-full bg-[#090e17]/95 backdrop-blur-2xl border-t border-slate-800/80 z-[4000] flex lg:hidden justify-around items-end px-2 pb-7 pt-3 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]">
-       <button @click="handleNav('/')" class="flex flex-col items-center gap-1.5 text-blue-500 active:scale-90 transition-transform">
+    <nav class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-2xl border-t border-pink-100 z-[4000] flex lg:hidden justify-around items-end px-2 pb-7 pt-3 shadow-[0_-10px_40px_rgba(237,78,149,0.15)]">
+       <button @click="handleNav('/')" class="flex flex-col items-center gap-1.5 text-pink-500 active:scale-90 transition-transform">
          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3l10 9h-3v9h-14v-9h-3z"/></svg>
          <span class="text-[8px] font-black tracking-widest">TRANG CHỦ</span>
        </button>
        
-       <button @click="handleScrollToHistory()" class="flex flex-col items-center gap-1.5 text-slate-500 active:scale-90 transition-transform">
+       <button @click="handleScrollToHistory()" class="flex flex-col items-center gap-1.5 text-slate-400 active:scale-90 transition-transform">
          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
          <span class="text-[8px] font-black tracking-widest">LỊCH SỬ</span>
        </button>
        
        <button @click="handleNav('/withdraw')" class="relative -top-5 flex flex-col items-center group">
-         <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full flex items-center justify-center text-white shadow-[0_10px_30px_rgba(37,99,235,0.6)] border-[5px] border-[#090e17] group-active:scale-90 transition-transform">
+         <div class="w-16 h-16 bg-gradient-to-tr from-[#ED4E95] to-[#A061F0] rounded-full flex items-center justify-center text-white shadow-[0_10px_30px_rgba(237,78,149,0.5)] border-[5px] border-[#FFF5F7] group-active:scale-90 transition-transform">
            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
          </div>
-         <span class="text-[9px] font-black text-blue-400 mt-1 tracking-widest">RÚT TIỀN</span>
+         <span class="text-[9px] font-black text-pink-500 mt-1 tracking-widest">RÚT TIỀN</span>
        </button>
        
-       <button @click="handleNav('/submit-report')" class="flex flex-col items-center gap-1.5 text-slate-500 active:scale-90 transition-transform">
+       <button @click="handleNav('/submit-report')" class="flex flex-col items-center gap-1.5 text-slate-400 active:scale-90 transition-transform">
          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
          <span class="text-[8px] font-black tracking-widest">BÁO CÁO</span>
        </button>
 
-       <button @click="isMenuOpen = true" class="flex flex-col items-center gap-1.5 text-slate-500 active:scale-90 transition-transform">
+       <button @click="isMenuOpen = true" class="flex flex-col items-center gap-1.5 text-slate-400 active:scale-90 transition-transform">
          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
          <span class="text-[8px] font-black tracking-widest">MENU</span>
        </button>
